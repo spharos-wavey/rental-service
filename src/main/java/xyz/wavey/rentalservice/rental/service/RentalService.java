@@ -7,5 +7,7 @@ public interface RentalService {
 
     ResponseEntity<Object> addRental(RequestAddRental requestAddRental);
 
+    ResponseEntity<Object> getRental(Long id);
+
     ResponseEntity<Object> deleteRental(Long id);
 }

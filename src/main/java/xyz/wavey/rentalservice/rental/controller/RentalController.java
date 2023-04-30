@@ -18,6 +18,11 @@ public class RentalController {
         return rentalService.addRental(requestAddRental);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getRental(@PathVariable Long id) {
+        return rentalService.getRental(id);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteRental(@PathVariable Long id) {
         return rentalService.deleteRental(id);

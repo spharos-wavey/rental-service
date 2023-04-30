@@ -32,6 +32,15 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    public ResponseEntity<Object> getRental(Long id) {
+        if (rentalRepo.findById(id).isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(rentalRepo.findById(id));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ReqRentalId is not exist");
+        }
+    }
+
+    @Override
     public ResponseEntity<Object> deleteRental(Long id) {
         if (rentalRepo.findById(id).isPresent()) {
             rentalRepo.deleteById(id);
