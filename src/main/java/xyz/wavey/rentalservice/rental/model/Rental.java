@@ -1,19 +1,17 @@
 package xyz.wavey.rentalservice.rental.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import xyz.wavey.rentalservice.baseTime.BaseTimeEntity;
 
 import java.util.Date;
 
 @Entity
 @Builder
-@Data
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rental {
+public class Rental extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
