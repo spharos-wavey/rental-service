@@ -3,6 +3,7 @@ package xyz.wavey.rentalservice.rental.model;
 import jakarta.persistence.*;
 import lombok.*;
 import xyz.wavey.rentalservice.baseTime.BaseTimeEntity;
+import xyz.wavey.rentalservice.insurance.model.Insurance;
 
 import java.util.Date;
 
@@ -45,5 +46,8 @@ public class Rental extends BaseTimeEntity {
     private Boolean keyAuth;
 
     private Date reqReturnTime;
+
+    @ManyToOne
+    private Insurance insurance;
 
 }

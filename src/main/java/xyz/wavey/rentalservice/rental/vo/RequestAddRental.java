@@ -34,4 +34,7 @@ public class RequestAddRental {
 
     private Integer price;
 
+    @Column(nullable = false)
+    private Integer insuranceId;
+
 }
