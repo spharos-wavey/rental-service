@@ -1,7 +1,7 @@
-package xyz.wavey.rentalservice.insurance.service;
+package xyz.wavey.rentalservice.service;
 
 import org.springframework.http.ResponseEntity;
-import xyz.wavey.rentalservice.insurance.vo.RequestAddInsurance;
+import xyz.wavey.rentalservice.vo.RequestAddInsurance;
 
 public interface InsuranceService {
 

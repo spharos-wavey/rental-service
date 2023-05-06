@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.rental.vo;
+package xyz.wavey.rentalservice.vo;
 
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;

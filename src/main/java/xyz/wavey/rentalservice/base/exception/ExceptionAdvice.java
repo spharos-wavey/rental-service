@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.exception;
+package xyz.wavey.rentalservice.base.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

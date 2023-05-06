@@ -1,13 +1,13 @@
-package xyz.wavey.rentalservice.rental.service;
+package xyz.wavey.rentalservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import xyz.wavey.rentalservice.insurance.ropository.InsuranceRepo;
-import xyz.wavey.rentalservice.rental.model.Rental;
-import xyz.wavey.rentalservice.rental.repository.RentalRepo;
-import xyz.wavey.rentalservice.rental.vo.RequestAddRental;
+import xyz.wavey.rentalservice.repository.InsuranceRepo;
+import xyz.wavey.rentalservice.model.Rental;
+import xyz.wavey.rentalservice.repository.RentalRepo;
+import xyz.wavey.rentalservice.vo.RequestAddRental;
 
 @Service
 @RequiredArgsConstructor
