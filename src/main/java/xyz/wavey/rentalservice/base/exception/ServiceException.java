@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.exception;
+package xyz.wavey.rentalservice.base.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

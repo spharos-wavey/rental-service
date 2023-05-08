@@ -1,7 +1,7 @@
-package xyz.wavey.rentalservice.rental.repository;
+package xyz.wavey.rentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import xyz.wavey.rentalservice.rental.model.Rental;
+import xyz.wavey.rentalservice.model.Rental;
 
 public interface RentalRepo extends JpaRepository<Rental, Long> {
 

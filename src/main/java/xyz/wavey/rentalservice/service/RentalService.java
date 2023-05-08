@@ -1,7 +1,7 @@
-package xyz.wavey.rentalservice.rental.service;
+package xyz.wavey.rentalservice.service;
 
 import org.springframework.http.ResponseEntity;
-import xyz.wavey.rentalservice.rental.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.RequestAddRental;
 
 public interface RentalService {
 

@@ -1,10 +1,10 @@
-package xyz.wavey.rentalservice.insurance.controller;
+package xyz.wavey.rentalservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.wavey.rentalservice.insurance.service.InsuranceService;
-import xyz.wavey.rentalservice.insurance.vo.RequestAddInsurance;
+import xyz.wavey.rentalservice.service.InsuranceService;
+import xyz.wavey.rentalservice.vo.RequestAddInsurance;
 
 @RestController
 @RequestMapping("/insurance")
