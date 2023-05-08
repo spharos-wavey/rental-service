@@ -46,7 +46,7 @@ public class Rental extends BaseTimeEntity {
 
     private Date reqReturnTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Insurance insurance;
 
 }
