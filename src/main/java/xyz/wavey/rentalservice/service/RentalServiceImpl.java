@@ -9,6 +9,7 @@ import xyz.wavey.rentalservice.repository.InsuranceRepo;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
+import java.time.LocalDateTime;
 
 import static xyz.wavey.rentalservice.base.exception.ErrorCode.*;
 
@@ -57,6 +58,22 @@ public class RentalServiceImpl implements RentalService{
             return ResponseEntity
                     .status(NOT_FOUND_RENTAL.getHttpStatus())
                     .body(NOT_FOUND_RENTAL.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Object> returnVehicle(Long id) {
+        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+                new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
+        if(rental.getReqReturnTime() == null){
+            LocalDateTime now = LocalDateTime.now();
+            rental.setReqReturnTime(now);
+            rentalRepo.save(rental);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity
+                    .status(ALREADY_PROCESSED_RETURN.getHttpStatus())
+                    .body(ALREADY_PROCESSED_RETURN.getMessage());
         }
     }
 

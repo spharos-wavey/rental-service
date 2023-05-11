@@ -28,4 +28,9 @@ public class RentalController {
         return rentalService.deleteRental(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> returnVehicle(@PathVariable Long id){
+        return rentalService.returnVehicle(id);
+    }
+
 }

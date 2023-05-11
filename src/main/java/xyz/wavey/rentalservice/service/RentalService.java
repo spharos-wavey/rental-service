@@ -10,4 +10,6 @@ public interface RentalService {
     ResponseEntity<Object> getRental(Long id);
 
     ResponseEntity<Object> deleteRental(Long id);
+
+    ResponseEntity<Object> returnVehicle(Long id);
 }
