@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import xyz.wavey.rentalservice.base.BaseTimeEntity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Builder
@@ -26,12 +25,12 @@ public class Rental extends BaseTimeEntity {
     private Long vehicleId;
 
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDateTime endDate;
 
-    private Date extendedTime;
+    private Integer extendedTime;
 
     @Column(nullable = false)
     private Integer startZone;
