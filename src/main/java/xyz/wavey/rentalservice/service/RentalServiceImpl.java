@@ -5,11 +5,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
+import xyz.wavey.rentalservice.model.Insurance;
 import xyz.wavey.rentalservice.repository.InsuranceRepo;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.ResponseGetRental;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static xyz.wavey.rentalservice.base.exception.ErrorCode.*;
 
@@ -43,10 +48,31 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public ResponseEntity<Object> getRental(Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(rentalRepo.findById(id)
+        Rental rental = rentalRepo.findById(id)
                 .orElseThrow(() -> new ServiceException(
                         NOT_FOUND_RENTAL.getMessage(),
-                        NOT_FOUND_RENTAL.getHttpStatus())));
+                        NOT_FOUND_RENTAL.getHttpStatus()));
+
+        Insurance insurance = rental.getInsurance();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
+
+        long durationSecond = Duration.between(rental.getStartDate(), rental.getEndDate()).toSeconds();
+        long day = durationSecond / (60 * 60 * 24);
+        long hour = (durationSecond % (60 * 60 * 24)) / (60 * 60);
+        long minute = ((durationSecond % (60 * 60 * 24)) % (60 * 60)) / 60;
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ResponseGetRental.builder()
+                        .rentalId(id)
+                        .vehicleId(rental.getVehicleId())
+                        .startTime(rental.getStartDate().format(dateTimeFormatter))
+                        .endTime(rental.getEndDate().format(dateTimeFormatter))
+                        .totalRentTime(String.format("%d %d:%d", day, hour, minute))
+                        .insuranceName(insurance.getName())
+                        .insurancePrice(insurance.getPrice())
+                        .build());
     }
 
     @Override
