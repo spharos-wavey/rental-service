@@ -1,12 +1,15 @@
-package xyz.wavey.rentalservice.insurance.service;
+package xyz.wavey.rentalservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import xyz.wavey.rentalservice.insurance.model.Insurance;
-import xyz.wavey.rentalservice.insurance.ropository.InsuranceRepo;
-import xyz.wavey.rentalservice.insurance.vo.RequestAddInsurance;
+import xyz.wavey.rentalservice.base.exception.ServiceException;
+import xyz.wavey.rentalservice.model.Insurance;
+import xyz.wavey.rentalservice.repository.InsuranceRepo;
+import xyz.wavey.rentalservice.vo.RequestAddInsurance;
+
+import static xyz.wavey.rentalservice.base.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +29,11 @@ public class InsuranceServiceImpl implements InsuranceService {
 
     @Override
     public ResponseEntity<Object> getInsurance(Integer id) {
-        if (insuranceRepo.findById(id).isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(insuranceRepo.findById(id));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ReqInsuranceId is not exist");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(insuranceRepo.findById(id)
+                .orElseThrow(() -> new ServiceException(
+                        NOT_FOUND_INSURANCE.getMessage(),
+                        NOT_FOUND_INSURANCE.getHttpStatus()
+                )));
     }
 
     @Override
@@ -38,7 +41,9 @@ public class InsuranceServiceImpl implements InsuranceService {
         if (!insuranceRepo.findAll().isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(insuranceRepo.findAll());
         } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Insurances are not exist");
+            return ResponseEntity
+                    .status(NOT_FOUND_INSURANCE.getHttpStatus())
+                    .body(NOT_FOUND_INSURANCE.getMessage());
         }
     }
 

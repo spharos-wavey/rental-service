@@ -1,8 +1,8 @@
-package xyz.wavey.rentalservice.insurance.model;
+package xyz.wavey.rentalservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import xyz.wavey.rentalservice.baseTime.BaseTimeEntity;
+import xyz.wavey.rentalservice.base.BaseTimeEntity;
 
 @Entity
 @Getter @Setter

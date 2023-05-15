@@ -1,10 +1,10 @@
-package xyz.wavey.rentalservice.rental.controller;
+package xyz.wavey.rentalservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.wavey.rentalservice.rental.service.RentalService;
-import xyz.wavey.rentalservice.rental.vo.RequestAddRental;
+import xyz.wavey.rentalservice.service.RentalService;
+import xyz.wavey.rentalservice.vo.RequestAddRental;
 
 @RestController
 @RequestMapping("/rental")
@@ -26,6 +26,11 @@ public class RentalController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteRental(@PathVariable Long id) {
         return rentalService.deleteRental(id);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> returnVehicle(@PathVariable Long id){
+        return rentalService.returnVehicle(id);
     }
 
 }

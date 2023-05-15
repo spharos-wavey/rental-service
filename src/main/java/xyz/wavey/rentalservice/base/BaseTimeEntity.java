@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.baseTime;
+package xyz.wavey.rentalservice.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
