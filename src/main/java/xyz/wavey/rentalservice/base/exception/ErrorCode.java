@@ -13,7 +13,9 @@ public enum ErrorCode {
 
     NOT_FOUND_INSURANCE("등록된 보험 정보가 존재하지 않습니다.", NOT_FOUND, 404),
 
-    ALREADY_PROCESSED_RETURN("이미 반납 처리 되었습니다.", BAD_REQUEST, 400)
+    ALREADY_PROCESSED_RETURN("이미 반납 처리 되었습니다.", BAD_REQUEST, 400),
+
+    FORBIDDDEN_SMARTKEY("스마트키 사용 권한이 없습니다.", FORBIDDEN, 403)
     ;
 
     private final String message;
