@@ -12,4 +12,6 @@ public interface RentalService {
     ResponseEntity<Object> deleteRental(Long id);
 
     ResponseEntity<Object> returnVehicle(Long id);
+
+    ResponseEntity<Object>  openSmartKey(Long id);
 }

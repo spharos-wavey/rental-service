@@ -33,4 +33,9 @@ public class RentalController {
         return rentalService.returnVehicle(id);
     }
 
+    @PatchMapping("/openKey/{id}")
+    public ResponseEntity<Object> openSmartKey(@PathVariable Long id){
+        return rentalService.openSmartKey(id);
+    }
+
 }

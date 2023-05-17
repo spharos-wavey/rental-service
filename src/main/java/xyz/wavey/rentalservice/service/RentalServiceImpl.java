@@ -103,4 +103,19 @@ public class RentalServiceImpl implements RentalService{
         }
     }
 
+    @Override
+    public ResponseEntity<Object> openSmartKey(Long id) {
+        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+                new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
+        if(rental.getKeyAuth() == Boolean.FALSE && rental.getStartDate().minusMinutes(16).isBefore(LocalDateTime.now())){
+            rental.setKeyAuth(Boolean.TRUE);
+            rentalRepo.save(rental);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else if(rental.getKeyAuth() == Boolean.FALSE && rental.getEndDate().isBefore(LocalDateTime.now())){
+            return ResponseEntity.status(ENDED_RENTAL_TIME.getHttpStatus()).body(ENDED_RENTAL_TIME.getMessage());
+        } else {
+            return ResponseEntity.status(FORBIDDDEN_SMARTKEY.getHttpStatus()).body(FORBIDDDEN_SMARTKEY.getMessage());
+        }
+    }
+
 }
