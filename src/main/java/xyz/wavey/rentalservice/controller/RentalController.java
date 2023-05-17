@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xyz.wavey.rentalservice.service.RentalService;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.RequestReturnTime;
 
 @RestController
 @RequestMapping("/rental")
@@ -29,8 +30,8 @@ public class RentalController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> returnVehicle(@PathVariable Long id){
-        return rentalService.returnVehicle(id);
+    public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturnTime requestReturnTime) {
+        return rentalService.returnVehicle(id,requestReturnTime);
     }
 
     @PatchMapping("/openKey/{id}")
