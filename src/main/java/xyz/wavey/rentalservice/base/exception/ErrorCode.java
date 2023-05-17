@@ -15,7 +15,9 @@ public enum ErrorCode {
 
     ALREADY_PROCESSED_RETURN("이미 반납 처리 되었습니다.", BAD_REQUEST, 400),
 
-    FORBIDDDEN_SMARTKEY("스마트키 사용 권한이 없습니다.", FORBIDDEN, 403)
+    FORBIDDDEN_SMARTKEY("스마트키는 대여 시작 15분 전부터 이용할 수 있습니다.", FORBIDDEN, 403),
+
+    ENDED_RENTAL_TIME("대여 가능 시각이 종료 되었습니다.",BAD_REQUEST,400)
     ;
 
     private final String message;
