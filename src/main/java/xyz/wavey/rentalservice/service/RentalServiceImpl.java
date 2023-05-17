@@ -96,7 +96,7 @@ public class RentalServiceImpl implements RentalService{
                 && rental.getStartDate().isBefore(requestReturnTime.getReturnTime())){
             rental.setReqReturnTime(requestReturnTime.getReturnTime());
             rentalRepo.save(rental);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body("정상적으로 반납 처리 되었습니다.");
         } else if(rental.getEndDate().isBefore(requestReturnTime.getReturnTime())){
             rental.setReqReturnTime(requestReturnTime.getReturnTime());
             rentalRepo.save(rental);
