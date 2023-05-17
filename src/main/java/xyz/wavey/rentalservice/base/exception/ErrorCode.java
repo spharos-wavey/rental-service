@@ -13,11 +13,11 @@ public enum ErrorCode {
 
     NOT_FOUND_INSURANCE("등록된 보험 정보가 존재하지 않습니다.", NOT_FOUND, 404),
 
-    ALREADY_PROCESSED_RETURN("이미 반납 처리 되었습니다.", BAD_REQUEST, 400),
+    CANNOT_RETURN("반납 처리 할 수 없습니다.", BAD_REQUEST, 400),
 
     FORBIDDDEN_SMARTKEY("스마트키는 대여 시작 15분 전부터 이용할 수 있습니다.", FORBIDDEN, 403),
 
-    ENDED_RENTAL_TIME("대여 가능 시각이 종료 되었습니다.",BAD_REQUEST,400)
+    ENDED_RENTAL_TIME("대여 가능 시각이 종료 되었습니다.", BAD_REQUEST, 400),
     ;
 
     private final String message;
