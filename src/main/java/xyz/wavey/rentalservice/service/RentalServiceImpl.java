@@ -10,6 +10,7 @@ import xyz.wavey.rentalservice.repository.InsuranceRepo;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.RequestReturnTime;
 import xyz.wavey.rentalservice.vo.ResponseGetRental;
 
 import java.time.Duration;
@@ -88,18 +89,22 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseEntity<Object> returnVehicle(Long id) {
+    public ResponseEntity<Object> returnVehicle(Long id, RequestReturnTime requestReturnTime) {
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
-        if(rental.getReqReturnTime() == null){
-            LocalDateTime now = LocalDateTime.now();
-            rental.setReqReturnTime(now);
+        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(requestReturnTime.getReturnTime())
+                && rental.getStartDate().isBefore(requestReturnTime.getReturnTime())){
+            rental.setReqReturnTime(requestReturnTime.getReturnTime());
             rentalRepo.save(rental);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
+        } else if(rental.getEndDate().isBefore(requestReturnTime.getReturnTime())){
+            rental.setReqReturnTime(requestReturnTime.getReturnTime());
+            rentalRepo.save(rental);
             return ResponseEntity
-                    .status(ALREADY_PROCESSED_RETURN.getHttpStatus())
-                    .body(ALREADY_PROCESSED_RETURN.getMessage());
+                    .status(HttpStatus.OK)
+                    .body("지연 반납 처리 되었습니다.");
+        } else {
+            return ResponseEntity.status(CANNOT_RETURN.getHttpStatus()).body(CANNOT_RETURN.getMessage());
         }
     }
 
