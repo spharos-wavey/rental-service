@@ -111,10 +111,11 @@ public class RentalServiceImpl implements RentalService{
             rental.setKeyAuth(Boolean.TRUE);
             rentalRepo.save(rental);
             return ResponseEntity.status(HttpStatus.OK).build();
+        } else if(rental.getKeyAuth() == Boolean.FALSE && rental.getEndDate().isBefore(LocalDateTime.now())){
+            return ResponseEntity.status(ENDED_RENTAL_TIME.getHttpStatus()).body(ENDED_RENTAL_TIME.getMessage());
         } else {
-            return ResponseEntity
-                    .status(FORBIDDDEN_SMARTKEY.getHttpStatus())
-                    .body(FORBIDDDEN_SMARTKEY.getMessage());
-        }}
+            return ResponseEntity.status(FORBIDDDEN_SMARTKEY.getHttpStatus()).body(FORBIDDDEN_SMARTKEY.getMessage());
+        }
+    }
 
 }
