@@ -19,7 +19,7 @@ public class Rental extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String uuid;
 
     @Column(nullable = false)
     private Long vehicleId;
@@ -48,7 +48,11 @@ public class Rental extends BaseTimeEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime reqReturnTime;
 
-    @ManyToOne
-    private Insurance insurance;
+    @Enumerated(EnumType.STRING)
+    private PurchaseState purchaseState;
+
+    @Column
+    private Integer insuranceId;
+
 
 }

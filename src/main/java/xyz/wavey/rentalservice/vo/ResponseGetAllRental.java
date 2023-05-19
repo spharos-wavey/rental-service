@@ -11,15 +11,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseGetRental {
-
+public class ResponseGetAllRental {
     private Long rentalId;
     private Long vehicleId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Integer billitaZoneId;
-    private Integer price;
-    private Integer insuranceId;
-    private String payment;
-
 }

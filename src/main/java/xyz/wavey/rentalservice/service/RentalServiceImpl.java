@@ -1,79 +1,87 @@
 package xyz.wavey.rentalservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
-import xyz.wavey.rentalservice.model.Insurance;
-import xyz.wavey.rentalservice.repository.InsuranceRepo;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
 import xyz.wavey.rentalservice.vo.RequestReturnTime;
+import xyz.wavey.rentalservice.vo.ResponseGetAllRental;
 import xyz.wavey.rentalservice.vo.ResponseGetRental;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static xyz.wavey.rentalservice.base.exception.ErrorCode.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RentalServiceImpl implements RentalService{
 
     private final RentalRepo rentalRepo;
-    private final InsuranceRepo insuranceRepo;
 
     @Override
     public ResponseEntity<Object> addRental(RequestAddRental requestAddRental) {
         Rental rental = rentalRepo.save(Rental.builder()
-                .userId(requestAddRental.getUserId())
+                .uuid(requestAddRental.getUuid())
+                .purchaseState(requestAddRental.getPurchaseState())
                 .vehicleId(requestAddRental.getVehicleId())
-                .startDate(requestAddRental.getStartDate())
+                .price(requestAddRental.getPrice())
                 .endDate(requestAddRental.getEndDate())
-                .startZone(requestAddRental.getStartZone())
+                .startDate(requestAddRental.getStartDate())
                 .returnZone(requestAddRental.getReturnZone())
-                .keyAuth(false)
+                .startZone(requestAddRental.getStartZone())
                 .payment(requestAddRental.getPayment())
                 .price(requestAddRental.getPrice())
-                .insurance(insuranceRepo.findById(requestAddRental.getInsuranceId())
-                        .orElseThrow(() -> new ServiceException(
-                                NOT_FOUND_RENTAL.getMessage(),
-                                NOT_FOUND_RENTAL.getHttpStatus())))
+                .insuranceId(requestAddRental.getInsuranceId())
+                .keyAuth(false)
                 .build());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(rental.getId());
     }
 
     @Override
-    public ResponseEntity<Object> getRental(Long id) {
-        Rental rental = rentalRepo.findById(id)
-                .orElseThrow(() -> new ServiceException(
-                        NOT_FOUND_RENTAL.getMessage(),
-                        NOT_FOUND_RENTAL.getHttpStatus()));
+    public List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState) {
+        List<Rental> rentalList;
+        if(purchaseState.equals("ALL")){
+            rentalList = rentalRepo.findAllByUuid(uuid);
+        } else {
+            rentalList = rentalRepo.findAllByUuidAndPurchaseState(uuid, purchaseState);
+        }
+        if (rentalList.isEmpty())
+            throw new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus());
+        List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
+        for(Rental rental : rentalList){
+            ResponseGetAllRental responseGetRental = ResponseGetAllRental.builder()
+                    .rentalId(rental.getId())
+                    .vehicleId(rental.getVehicleId())
+                    .endDate(rental.getEndDate())
+                    .startDate(rental.getStartDate())
+                    .build();
+            responseGetAllRentals.add(responseGetRental);
+        }
+        return responseGetAllRentals;
+    }
 
-        Insurance insurance = rental.getInsurance();
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
-
-        long durationSecond = Duration.between(rental.getStartDate(), rental.getEndDate()).toSeconds();
-        long day = durationSecond / (60 * 60 * 24);
-        long hour = (durationSecond % (60 * 60 * 24)) / (60 * 60);
-        long minute = ((durationSecond % (60 * 60 * 24)) % (60 * 60)) / 60;
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ResponseGetRental.builder()
-                        .rentalId(id)
-                        .vehicleId(rental.getVehicleId())
-                        .startTime(rental.getStartDate().format(dateTimeFormatter))
-                        .endTime(rental.getEndDate().format(dateTimeFormatter))
-                        .totalRentTime(String.format("%d %d:%d", day, hour, minute))
-                        .insuranceName(insurance.getName())
-                        .insurancePrice(insurance.getPrice())
-                        .build());
+    @Override
+    public ResponseGetRental getRental(Long id) {
+        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+                new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
+        return ResponseGetRental.builder()
+                .rentalId(rental.getId())
+                .vehicleId(rental.getVehicleId())
+                .endDate(rental.getEndDate())
+                .startDate(rental.getStartDate())
+                .billitaZoneId(rental.getReturnZone())
+                .price(rental.getPrice())
+                .payment(rental.getPayment())
+                .insuranceId(rental.getInsuranceId())
+                .build();
     }
 
     @Override
