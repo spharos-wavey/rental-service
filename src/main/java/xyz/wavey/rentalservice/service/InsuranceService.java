@@ -1,13 +1,16 @@
 package xyz.wavey.rentalservice.service;
 
-import org.springframework.http.ResponseEntity;
+import xyz.wavey.rentalservice.model.Insurance;
 import xyz.wavey.rentalservice.vo.RequestAddInsurance;
+
+import java.util.List;
 
 public interface InsuranceService {
 
-    ResponseEntity<Object> addInsurance(RequestAddInsurance requestAddInsurance);
+    Insurance addInsurance(RequestAddInsurance requestAddInsurance);
 
-    ResponseEntity<Object> getInsurance(Integer id);
+    Insurance getInsurance(Integer id);
 
-    ResponseEntity<Object> getAllInsurance();
+    List<Insurance> getAllInsurance();
+
 }
