@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xyz.wavey.rentalservice.service.RentalService;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestReturnTime;
-import xyz.wavey.rentalservice.vo.ResponseGetAllRental;
-import xyz.wavey.rentalservice.vo.ResponseGetRental;
+import xyz.wavey.rentalservice.vo.*;
 
 import java.util.List;
 
@@ -24,7 +21,9 @@ public class RentalController {
 
     @PostMapping()
     public ResponseEntity<Object> addRental(@RequestBody RequestAddRental requestAddRental) {
-        return rentalService.addRental(requestAddRental);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(rentalService.addRental(requestAddRental));
     }
 
     @GetMapping("/{purchaseState}")
@@ -42,12 +41,15 @@ public class RentalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteRental(@PathVariable Long id) {
-        return rentalService.deleteRental(id);
+        return ResponseEntity.status(rentalService.deleteRental(id)).build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturnTime requestReturnTime) {
-        return rentalService.returnVehicle(id,requestReturnTime);
+        ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(id,requestReturnTime);
+        return ResponseEntity
+                .status(returnVehicle.getHttpStatus())
+                .body(returnVehicle.getMessage());
     }
 
     @PatchMapping("/openKey/{id}")
