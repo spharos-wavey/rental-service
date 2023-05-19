@@ -1,9 +1,9 @@
 package xyz.wavey.rentalservice.vo;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import xyz.wavey.rentalservice.model.PurchaseState;
 
 import java.time.LocalDateTime;
 
@@ -12,29 +12,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RequestAddRental {
 
-    @Column(nullable = false)
-    private Long userId;
+    private String uuid;
 
-    @Column(nullable = false)
     private Long vehicleId;
 
-    @Column(nullable = false)
     private LocalDateTime startDate;
 
-    @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column(nullable = false)
     private Integer startZone;
 
-    @Column(nullable = false)
     private Integer returnZone;
 
     private String payment;
 
     private Integer price;
 
-    @Column(nullable = false)
+    private PurchaseState purchaseState;
+
     private Integer insuranceId;
 
 }
