@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestReturnTime;
-import xyz.wavey.rentalservice.vo.ResponseGetAllRental;
-import xyz.wavey.rentalservice.vo.ResponseGetRental;
+import xyz.wavey.rentalservice.vo.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,8 +24,8 @@ public class RentalServiceImpl implements RentalService{
     private final RentalRepo rentalRepo;
 
     @Override
-    public ResponseEntity<Object> addRental(RequestAddRental requestAddRental) {
-        Rental rental = rentalRepo.save(Rental.builder()
+    public Rental addRental(RequestAddRental requestAddRental) {
+        return rentalRepo.save(Rental.builder()
                 .uuid(requestAddRental.getUuid())
                 .purchaseState(requestAddRental.getPurchaseState())
                 .vehicleId(requestAddRental.getVehicleId())
@@ -42,7 +39,6 @@ public class RentalServiceImpl implements RentalService{
                 .insuranceId(requestAddRental.getInsuranceId())
                 .keyAuth(false)
                 .build());
-        return ResponseEntity.status(HttpStatus.CREATED).body(rental.getId());
     }
 
     @Override
@@ -85,34 +81,42 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseEntity<Object> deleteRental(Long id) {
+    public HttpStatus deleteRental(Long id) {
         if (rentalRepo.findById(id).isPresent()) {
             rentalRepo.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return HttpStatus.OK;
         } else {
-            return ResponseEntity
-                    .status(NOT_FOUND_RENTAL.getHttpStatus())
-                    .body(NOT_FOUND_RENTAL.getMessage());
+            return HttpStatus.NOT_FOUND;
         }
     }
 
     @Override
-    public ResponseEntity<Object> returnVehicle(Long id, RequestReturnTime requestReturnTime) {
+    public ResponseReturnVehicle returnVehicle(Long id, RequestReturnTime requestReturnTime) {
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
+
         if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(requestReturnTime.getReturnTime())
                 && rental.getStartDate().isBefore(requestReturnTime.getReturnTime())){
+
             rental.setReqReturnTime(requestReturnTime.getReturnTime());
             rentalRepo.save(rental);
-            return ResponseEntity.status(HttpStatus.OK).body("정상적으로 반납 처리 되었습니다.");
+            return ResponseReturnVehicle.builder()
+                    .httpStatus(HttpStatus.OK)
+                    .message("정상적으로 반납 처리 되었습니다.")
+                    .build();
+
         } else if(rental.getEndDate().isBefore(requestReturnTime.getReturnTime())){
             rental.setReqReturnTime(requestReturnTime.getReturnTime());
             rentalRepo.save(rental);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("지연 반납 처리 되었습니다.");
+            return ResponseReturnVehicle.builder()
+                    .httpStatus(HttpStatus.OK)
+                    .message("지연 반납 처리 되었습니다.")
+                    .build();
         } else {
-            return ResponseEntity.status(CANNOT_RETURN.getHttpStatus()).body(CANNOT_RETURN.getMessage());
+            return ResponseReturnVehicle.builder()
+                    .httpStatus(CANNOT_RETURN.getHttpStatus())
+                    .message(CANNOT_RETURN.getMessage())
+                    .build();
         }
     }
 
