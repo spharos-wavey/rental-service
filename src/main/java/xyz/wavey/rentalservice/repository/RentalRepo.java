@@ -10,4 +10,6 @@ public interface RentalRepo extends JpaRepository<Rental, Long> {
 
     @Query(value = "select * from rental where uuid = :uuid and purchase_state = :purchaseState", nativeQuery = true)
     List<Rental> findAllByUuidAndPurchaseState(@Param("uuid") String uuid, @Param("purchaseState") String purchaseState);
+
+    List<Rental> findAllByUuid(String uuid);
 }
