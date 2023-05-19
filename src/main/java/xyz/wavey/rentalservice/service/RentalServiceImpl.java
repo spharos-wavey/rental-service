@@ -47,8 +47,8 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState) {
-        List<Rental> rentalList = new ArrayList<>();
-        if(purchaseState.equals("all")){
+        List<Rental> rentalList;
+        if(purchaseState.equals("ALL")){
             rentalList = rentalRepo.findAllByUuid(uuid);
         } else {
             rentalList = rentalRepo.findAllByUuidAndPurchaseState(uuid, purchaseState);
