@@ -38,9 +38,11 @@ public class Rental extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer returnZone;
 
-    private String payment;
+    private String paymentMethod;
 
     private Integer price;
+
+    private Integer finalPrice;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean keyAuth;

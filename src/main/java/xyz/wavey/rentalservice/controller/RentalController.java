@@ -45,8 +45,8 @@ public class RentalController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturnTime requestReturnTime) {
-        ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(id,requestReturnTime);
+    public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturn requestReturn) {
+        ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(id, requestReturn);
         return ResponseEntity
                 .status(returnVehicle.getHttpStatus())
                 .body(returnVehicle.getMessage());
