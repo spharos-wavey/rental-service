@@ -30,7 +30,12 @@ public class RentalController {
     public ResponseEntity<List<ResponseGetAllRental>> getAllRental(@RequestHeader("uuid") String uuid,
                                             @PathVariable("purchaseState") String purchaseState){
         List<ResponseGetAllRental> response = rentalService.getAllRental(uuid, purchaseState);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        if (response.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
 
     @GetMapping()

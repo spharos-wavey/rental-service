@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
+import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.*;
@@ -47,10 +48,14 @@ public class RentalServiceImpl implements RentalService{
         if(purchaseState.equals("ALL")){
             rentalList = rentalRepo.findAllByUuid(uuid);
         } else {
+            try {
+                PurchaseState.valueOf(purchaseState);
+            } catch (Exception e) {
+                throw new ServiceException(BAD_REQUEST_PURCHASE_STATE.getMessage(), BAD_REQUEST_PURCHASE_STATE.getHttpStatus());
+            }
             rentalList = rentalRepo.findAllByUuidAndPurchaseState(uuid, purchaseState);
         }
-        if (rentalList.isEmpty())
-            throw new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus());
+
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
         for(Rental rental : rentalList){
             ResponseGetAllRental responseGetRental = ResponseGetAllRental.builder()
@@ -87,7 +92,7 @@ public class RentalServiceImpl implements RentalService{
             rentalRepo.deleteById(id);
             return HttpStatus.OK;
         } else {
-            return HttpStatus.NOT_FOUND;
+            return HttpStatus.BAD_REQUEST;
         }
     }
 
