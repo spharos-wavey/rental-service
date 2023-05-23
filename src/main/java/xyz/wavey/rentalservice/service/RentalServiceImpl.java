@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
+import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.*;
@@ -27,7 +28,7 @@ public class RentalServiceImpl implements RentalService{
     public Rental addRental(RequestAddRental requestAddRental) {
         return rentalRepo.save(Rental.builder()
                 .uuid(requestAddRental.getUuid())
-                .purchaseState(requestAddRental.getPurchaseState())
+                .purchaseState(PurchaseState.RESERVATION)
                 .vehicleId(requestAddRental.getVehicleId())
                 .price(requestAddRental.getPrice())
                 .endDate(requestAddRental.getEndDate())

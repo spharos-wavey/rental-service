@@ -30,8 +30,6 @@ public class RequestAddRental {
 
     private Integer finalPrice;
 
-    private PurchaseState purchaseState;
-
     private Integer insuranceId;
 
 }
