@@ -117,6 +117,7 @@ public class RentalServiceImpl implements RentalService{
                 && rental.getStartDate().isBefore(requestReturn.getReturnTime())){
             rental.setFinalPrice(requestReturn.getFinalPrice());
             rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
@@ -125,6 +126,7 @@ public class RentalServiceImpl implements RentalService{
         } else if(rental.getEndDate().isBefore(requestReturn.getReturnTime())){
             rental.setFinalPrice(requestReturn.getFinalPrice());
             rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
