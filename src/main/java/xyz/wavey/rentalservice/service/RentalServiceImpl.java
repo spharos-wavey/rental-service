@@ -34,7 +34,7 @@ public class RentalServiceImpl implements RentalService{
                 .startDate(requestAddRental.getStartDate())
                 .returnZone(requestAddRental.getReturnZone())
                 .startZone(requestAddRental.getStartZone())
-                .payment(requestAddRental.getPayment())
+                .paymentMethod(requestAddRental.getPaymentMethod())
                 .price(requestAddRental.getPrice())
                 .insuranceId(requestAddRental.getInsuranceId())
                 .keyAuth(false)
@@ -75,7 +75,8 @@ public class RentalServiceImpl implements RentalService{
                 .startDate(rental.getStartDate())
                 .billitaZoneId(rental.getReturnZone())
                 .price(rental.getPrice())
-                .payment(rental.getPayment())
+                .finalPrice(rental.getFinalPrice())
+                .paymentMethod(rental.getPaymentMethod())
                 .insuranceId(rental.getInsuranceId())
                 .build();
     }
@@ -91,22 +92,22 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseReturnVehicle returnVehicle(Long id, RequestReturnTime requestReturnTime) {
+    public ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn) {
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
 
-        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(requestReturnTime.getReturnTime())
-                && rental.getStartDate().isBefore(requestReturnTime.getReturnTime())){
-
-            rental.setReqReturnTime(requestReturnTime.getReturnTime());
+        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(requestReturn.getReturnTime())
+                && rental.getStartDate().isBefore(requestReturn.getReturnTime())){
+            rental.setFinalPrice(requestReturn.getFinalPrice());
+            rental.setReqReturnTime(requestReturn.getReturnTime());
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
                     .message("정상적으로 반납 처리 되었습니다.")
                     .build();
-
-        } else if(rental.getEndDate().isBefore(requestReturnTime.getReturnTime())){
-            rental.setReqReturnTime(requestReturnTime.getReturnTime());
+        } else if(rental.getEndDate().isBefore(requestReturn.getReturnTime())){
+            rental.setFinalPrice(requestReturn.getFinalPrice());
+            rental.setReqReturnTime(requestReturn.getReturnTime());
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)

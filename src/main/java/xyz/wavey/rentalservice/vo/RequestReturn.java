@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestReturnTime {
+public class RequestReturn {
+
     private LocalDateTime returnTime;
+
+    private Integer finalPrice;
+
 }

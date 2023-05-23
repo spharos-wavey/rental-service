@@ -19,7 +19,8 @@ public class ResponseGetRental {
     private LocalDateTime endDate;
     private Integer billitaZoneId;
     private Integer price;
+    private Integer finalPrice;
     private Integer insuranceId;
-    private String payment;
+    private String paymentMethod;
 
 }

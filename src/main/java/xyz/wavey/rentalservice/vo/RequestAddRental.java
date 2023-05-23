@@ -24,9 +24,11 @@ public class RequestAddRental {
 
     private Integer returnZone;
 
-    private String payment;
+    private String paymentMethod;
 
     private Integer price;
+
+    private Integer finalPrice;
 
     private PurchaseState purchaseState;
 

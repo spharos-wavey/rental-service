@@ -17,7 +17,7 @@ public interface RentalService {
 
     HttpStatus deleteRental(Long id);
 
-    ResponseReturnVehicle returnVehicle(Long id, RequestReturnTime requestReturnTime);
+    ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn);
 
     ResponseEntity<Object> openSmartKey(Long id);
 }
