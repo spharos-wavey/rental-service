@@ -28,7 +28,7 @@ public class RentalServiceImpl implements RentalService{
     public Rental addRental(RequestAddRental requestAddRental) {
         return rentalRepo.save(Rental.builder()
                 .uuid(requestAddRental.getUuid())
-                .purchaseState(requestAddRental.getPurchaseState())
+                .purchaseState(PurchaseState.RESERVATION)
                 .vehicleId(requestAddRental.getVehicleId())
                 .price(requestAddRental.getPrice())
                 .endDate(requestAddRental.getEndDate())
@@ -97,6 +97,18 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    public HttpStatus cancelRental(Long id) {
+        if (rentalRepo.findById(id).isPresent()){
+            Rental rental = rentalRepo.findById(id).get();
+            rental.setPurchaseState(PurchaseState.CANCELLED);
+            rentalRepo.save(rental);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.NOT_FOUND;
+        }
+    }
+
+    @Override
     public ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn) {
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -105,6 +117,7 @@ public class RentalServiceImpl implements RentalService{
                 && rental.getStartDate().isBefore(requestReturn.getReturnTime())){
             rental.setFinalPrice(requestReturn.getFinalPrice());
             rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
@@ -113,6 +126,7 @@ public class RentalServiceImpl implements RentalService{
         } else if(rental.getEndDate().isBefore(requestReturn.getReturnTime())){
             rental.setFinalPrice(requestReturn.getFinalPrice());
             rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)

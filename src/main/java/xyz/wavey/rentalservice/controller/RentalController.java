@@ -49,6 +49,11 @@ public class RentalController {
         return ResponseEntity.status(rentalService.deleteRental(id)).build();
     }
 
+    @GetMapping("/cancel/{id}")
+    public ResponseEntity<Object> cancelRental(@PathVariable Long id) {
+        return ResponseEntity.status(rentalService.cancelRental(id)).build();
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturn requestReturn) {
         ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(id, requestReturn);
