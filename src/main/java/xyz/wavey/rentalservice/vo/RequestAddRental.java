@@ -3,7 +3,6 @@ package xyz.wavey.rentalservice.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import xyz.wavey.rentalservice.model.PurchaseState;
 
 import java.time.LocalDateTime;
 
