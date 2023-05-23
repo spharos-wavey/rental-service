@@ -93,6 +93,18 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    public HttpStatus cancelRental(Long id) {
+        if (rentalRepo.findById(id).isPresent()){
+            Rental rental = rentalRepo.findById(id).get();
+            rental.setPurchaseState(PurchaseState.CANCELLED);
+            rentalRepo.save(rental);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.NOT_FOUND;
+        }
+    }
+
+    @Override
     public ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn) {
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
