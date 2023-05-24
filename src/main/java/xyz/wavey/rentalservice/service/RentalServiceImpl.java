@@ -114,19 +114,19 @@ public class RentalServiceImpl implements RentalService{
         Rental rental = rentalRepo.findById(id).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
 
-        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(requestReturn.getReturnTime())
-                && rental.getStartDate().isBefore(requestReturn.getReturnTime())){
+        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))
+                && rental.getStartDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))){
             rental.setFinalPrice(requestReturn.getFinalPrice());
-            rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setReqReturnTime(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter));
             rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
                     .message("정상적으로 반납 처리 되었습니다.")
                     .build();
-        } else if(rental.getEndDate().isBefore(requestReturn.getReturnTime())){
+        } else if(rental.getReqReturnTime() == null && rental.getEndDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))){
             rental.setFinalPrice(requestReturn.getFinalPrice());
-            rental.setReqReturnTime(requestReturn.getReturnTime());
+            rental.setReqReturnTime(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter));
             rental.setPurchaseState(PurchaseState.RETURNED);
             rentalRepo.save(rental);
             return ResponseReturnVehicle.builder()
