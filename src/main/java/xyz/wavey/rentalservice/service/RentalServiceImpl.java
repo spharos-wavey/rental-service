@@ -59,13 +59,12 @@ public class RentalServiceImpl implements RentalService{
 
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
         for(Rental rental : rentalList){
-            ResponseGetAllRental responseGetRental = ResponseGetAllRental.builder()
+            responseGetAllRentals.add(ResponseGetAllRental.builder()
                     .rentalId(rental.getId())
                     .vehicleId(rental.getVehicleId())
                     .endDate(rental.getEndDate())
                     .startDate(rental.getStartDate())
-                    .build();
-            responseGetAllRentals.add(responseGetRental);
+                    .build());
         }
         return responseGetAllRentals;
     }
@@ -88,8 +87,8 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public HttpStatus deleteRental(Long id) {
-        if (rentalRepo.findById(id).isPresent()) {
+    public HttpStatus deleteRental(String uuid, Long id) {
+        if (rentalRepo.findByIdAndUuid(id, uuid).isPresent()) {
             rentalRepo.deleteById(id);
             return HttpStatus.OK;
         } else {
@@ -98,10 +97,10 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public HttpStatus cancelRental(Long id) {
-        if (rentalRepo.findById(id).isPresent()){
+    public HttpStatus cancelRental(String uuid, Long id) {
+        if (rentalRepo.findByIdAndUuid(id, uuid).isPresent()){
             Rental rental = rentalRepo.findById(id).get();
-            rental.setPurchaseState(PurchaseState.CANCELLED);
+            rental.setPurchaseState(PurchaseState.CANCELED);
             rentalRepo.save(rental);
             return HttpStatus.OK;
         } else {
@@ -110,28 +109,29 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn) {
-        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+    public ResponseReturnVehicle returnVehicle(String uuid, Long id, RequestReturn requestReturn) {
+        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
 
-        if(rental.getReqReturnTime() == null && rental.getEndDate().isAfter(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))
-                && rental.getStartDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))){
+        if (rental.getReqReturnTime() == null) {
             rental.setFinalPrice(requestReturn.getFinalPrice());
             rental.setReqReturnTime(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter));
             rental.setPurchaseState(PurchaseState.RETURNED);
+            rental.setKeyAuth(false);
             rentalRepo.save(rental);
+
+            //todo 대여 시작 시간보다 이른 시간에 반납이 가능한가? 가능하다면 어떻게 처리할 것인가에 대한 논의 필요 - 05/24 - 김지욱
+            String message = null;
+            if (rental.getEndDate().isAfter(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter)) &&
+                    rental.getStartDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))) {
+                message = "정상적으로 반납 처리 되었습니다.";
+            } else if (rental.getEndDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))) {
+                message = "지연 반납 처리 되었습니다.";
+            }
+
             return ResponseReturnVehicle.builder()
                     .httpStatus(HttpStatus.OK)
-                    .message("정상적으로 반납 처리 되었습니다.")
-                    .build();
-        } else if(rental.getReqReturnTime() == null && rental.getEndDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))){
-            rental.setFinalPrice(requestReturn.getFinalPrice());
-            rental.setReqReturnTime(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter));
-            rental.setPurchaseState(PurchaseState.RETURNED);
-            rentalRepo.save(rental);
-            return ResponseReturnVehicle.builder()
-                    .httpStatus(HttpStatus.OK)
-                    .message("지연 반납 처리 되었습니다.")
+                    .message(message)
                     .build();
         } else {
             return ResponseReturnVehicle.builder()
@@ -142,8 +142,8 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseEntity<Object> openSmartKey(Long id) {
-        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+    public ResponseEntity<Object> openSmartKey(String uuid, Long id) {
+        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
         if(rental.getKeyAuth() == Boolean.FALSE && rental.getStartDate().minusMinutes(16).isBefore(LocalDateTime.now())){
             rental.setKeyAuth(Boolean.TRUE);

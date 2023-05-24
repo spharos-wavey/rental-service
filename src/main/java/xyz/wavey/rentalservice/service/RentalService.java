@@ -15,11 +15,12 @@ public interface RentalService {
 
     ResponseGetRental getRental(Long id);
 
-    HttpStatus deleteRental(Long id);
+    HttpStatus deleteRental(String uuid, Long id);
 
-    HttpStatus cancelRental(Long id);
+    HttpStatus cancelRental(String uuid, Long id);
 
-    ResponseReturnVehicle returnVehicle(Long id, RequestReturn requestReturn);
+    ResponseReturnVehicle returnVehicle(String uuid, Long id, RequestReturn requestReturn);
 
-    ResponseEntity<Object> openSmartKey(Long id);
+    ResponseEntity<Object> openSmartKey(String uuid, Long id);
+
 }
