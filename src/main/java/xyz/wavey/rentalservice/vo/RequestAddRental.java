@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,9 +13,9 @@ public class RequestAddRental {
 
     private Long vehicleId;
 
-    private LocalDateTime startDate;
+    private String startDate;
 
-    private LocalDateTime endDate;
+    private String endDate;
 
     private Integer startZone;
 
@@ -26,8 +24,6 @@ public class RequestAddRental {
     private String paymentMethod;
 
     private Integer price;
-
-    private Integer finalPrice;
 
     private Integer insuranceId;
 

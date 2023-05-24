@@ -27,8 +27,10 @@ public class RentalController {
     }
 
     @GetMapping("/{purchaseState}")
-    public ResponseEntity<List<ResponseGetAllRental>> getAllRental(@RequestHeader("uuid") String uuid,
-                                            @PathVariable("purchaseState") String purchaseState){
+    public ResponseEntity<List<ResponseGetAllRental>> getAllRental(
+            @RequestHeader("uid") String uuid,
+            @PathVariable("purchaseState") String purchaseState){
+
         List<ResponseGetAllRental> response = rentalService.getAllRental(uuid, purchaseState);
 
         if (response.isEmpty()) {
@@ -40,31 +42,41 @@ public class RentalController {
 
     @GetMapping()
     public ResponseEntity<Object> getRental(@RequestParam("id") Long id){
-        ResponseGetRental response = rentalService.getRental(id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(rentalService.getRental(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteRental(@PathVariable Long id) {
-        return ResponseEntity.status(rentalService.deleteRental(id)).build();
+    public ResponseEntity<Object> deleteRental(
+            @RequestHeader("uid") String uuid,
+            @PathVariable Long id) {
+        return ResponseEntity.status(rentalService.deleteRental(uuid, id)).build();
     }
 
     @GetMapping("/cancel/{id}")
-    public ResponseEntity<Object> cancelRental(@PathVariable Long id) {
-        return ResponseEntity.status(rentalService.cancelRental(id)).build();
+    public ResponseEntity<Object> cancelRental(
+            @RequestHeader("uid") String uuid,
+            @PathVariable Long id) {
+        return ResponseEntity.status(rentalService.cancelRental(uuid, id)).build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> returnVehicle(@PathVariable Long id, @RequestBody RequestReturn requestReturn) {
-        ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(id, requestReturn);
+    public ResponseEntity<Object> returnVehicle(
+            @RequestHeader("uid") String uuid,
+            @PathVariable Long id,
+            @RequestBody RequestReturn requestReturn) {
+        ResponseReturnVehicle returnVehicle = rentalService.returnVehicle(uuid, id, requestReturn);
         return ResponseEntity
                 .status(returnVehicle.getHttpStatus())
                 .body(returnVehicle.getMessage());
     }
 
     @PatchMapping("/openKey/{id}")
-    public ResponseEntity<Object> openSmartKey(@PathVariable Long id){
-        return rentalService.openSmartKey(id);
+    public ResponseEntity<Object> openSmartKey(
+            @RequestHeader("uid") String uuid,
+            @PathVariable Long id){
+        return rentalService.openSmartKey(uuid, id);
     }
 
 }

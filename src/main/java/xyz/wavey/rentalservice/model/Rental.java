@@ -2,7 +2,6 @@ package xyz.wavey.rentalservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import xyz.wavey.rentalservice.base.BaseTimeEntity;
 
 import java.time.LocalDateTime;
@@ -47,14 +46,11 @@ public class Rental extends BaseTimeEntity {
     @Column(columnDefinition = "boolean default false")
     private Boolean keyAuth;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime reqReturnTime;
 
     @Enumerated(EnumType.STRING)
     private PurchaseState purchaseState;
 
-    @Column
     private Integer insuranceId;
-
 
 }
