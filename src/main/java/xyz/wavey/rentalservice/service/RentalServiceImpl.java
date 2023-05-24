@@ -12,6 +12,7 @@ import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import static xyz.wavey.rentalservice.base.exception.ErrorCode.*;
 public class RentalServiceImpl implements RentalService{
 
     private final RentalRepo rentalRepo;
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public Rental addRental(RequestAddRental requestAddRental) {
