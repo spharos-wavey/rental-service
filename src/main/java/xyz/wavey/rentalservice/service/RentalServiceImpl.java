@@ -28,12 +28,29 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public Rental addRental(RequestAddRental requestAddRental) {
+
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+        try {
+            startDate = LocalDateTime.parse(requestAddRental.getStartDate(), dateTimeFormatter);
+            endDate = LocalDateTime.parse(requestAddRental.getEndDate(), dateTimeFormatter);
+        } catch (Exception e) {
+            throw new ServiceException(BAD_REQUEST_DATEFORMAT.getMessage(), BAD_REQUEST_DATEFORMAT.getHttpStatus());
+        }
+
+        if (!rentalRepo.checkUserCanBool(requestAddRental.getUuid(), startDate, endDate).isEmpty()) {
+            throw new ServiceException(
+                    BAD_REQUEST_RENTAL_DUPLICATED.getMessage(),
+                    BAD_REQUEST_RENTAL_DUPLICATED.getHttpStatus()
+            );
+        }
+
         return rentalRepo.save(Rental.builder()
                 .uuid(requestAddRental.getUuid())
                 .purchaseState(PurchaseState.RESERVATION)
                 .vehicleId(requestAddRental.getVehicleId())
-                .endDate(LocalDateTime.parse(requestAddRental.getEndDate(), dateTimeFormatter))
-                .startDate(LocalDateTime.parse(requestAddRental.getStartDate(), dateTimeFormatter))
+                .endDate(endDate)
+                .startDate(startDate)
                 .returnZone(requestAddRental.getReturnZone())
                 .startZone(requestAddRental.getStartZone())
                 .paymentMethod(requestAddRental.getPaymentMethod())
