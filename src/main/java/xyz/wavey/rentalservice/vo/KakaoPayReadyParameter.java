@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestKakaoPayReady {
+public class KakaoPayReadyParameter {
 
     private String cid;
     private String partner_order_id;

@@ -36,7 +36,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         * */
         requestAddRental.setPurchaseNumber(UUID.randomUUID().toString());
 
-        ResponseKakaoPayReady responseKakaoPayReady = kakaoPayOpenFeign.kakaoPayReady(RequestKakaoPayReady.builder()
+        ResponseKakaoPayReady responseKakaoPayReady = kakaoPayOpenFeign.kakaoPayReady(KakaoPayReadyParameter.builder()
                 .cid(CID)
                 .partner_order_id(requestAddRental.getPurchaseNumber())
                 .partner_user_id(requestAddRental.getUuid())
