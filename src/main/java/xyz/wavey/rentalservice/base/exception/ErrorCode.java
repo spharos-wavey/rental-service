@@ -21,8 +21,9 @@ public enum ErrorCode {
 
     BAD_REQUEST_PURCHASE_STATE("잘못된 결제 상태값입니다.", BAD_REQUEST, 400),
 
-    JSON_PROCESSING_EXCEPTION("JSON 처리 중 오류가 발생하였습니다.", INTERNAL_SERVER_ERROR, 500),
+    BAD_REQUEST_RENTAL_DUPLICATED("해당 시간대에 이미 대여된 차량이 존재합니다.", BAD_REQUEST, 400),
 
+    BAD_REQUEST_DATEFORMAT("날짜 형식이 잘못되었습니다.", BAD_REQUEST, 400),
 
     ;
 
