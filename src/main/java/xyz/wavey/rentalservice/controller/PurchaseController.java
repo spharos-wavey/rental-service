@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.wavey.rentalservice.service.PurchaseService;
 import xyz.wavey.rentalservice.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.RequestKakaoPayApprove;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,9 +25,8 @@ public class PurchaseController {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.kakaoPayReady(requestAddRental));
     }
 
-    //todo 결제 승인 요청하기
-    /*
-    * pg 토큰 받아서 처리
-    * Request vo 를 생성 or header 로 값 받기
-    * */
+    @PostMapping("/kakao/approve")
+    public ResponseEntity<Object> kakaoPayApprove(@RequestBody RequestKakaoPayApprove requestKakaoPayApprove) {
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.kakaoPayApprove(requestKakaoPayApprove));
+    }
 }

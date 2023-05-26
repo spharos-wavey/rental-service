@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestKakaoPayReady;
-import xyz.wavey.rentalservice.vo.ResponseKakaoPayReady;
+import xyz.wavey.rentalservice.vo.*;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -57,5 +56,19 @@ public class PurchaseServiceImpl implements PurchaseService{
         vop.set(requestAddRental.getPurchaseNumber(), requestAddRental);
         requestAddRentalRedisTemplate.expire(requestAddRental.getPurchaseNumber(), 10, TimeUnit.MINUTES);
         return responseKakaoPayReady;
+    }
+
+    @Override
+    public ResponseKakaoPayApprove kakaoPayApprove(RequestKakaoPayApprove requestKakaoPayApprove) {
+        ValueOperations<String, RequestAddRental> vop = requestAddRentalRedisTemplate.opsForValue();
+        RequestAddRental purchaseInfo = vop.get(requestKakaoPayApprove.getPurchaseNumber());
+
+        return kakaoPayOpenFeign.approval(KakaoPayApproveParameter.builder()
+                .cid(CID)
+                .tid(Objects.requireNonNull(purchaseInfo).getTid())
+                .partner_order_id(purchaseInfo.getPurchaseNumber())
+                .partner_user_id(purchaseInfo.getUuid())
+                .pg_token(requestKakaoPayApprove.getPg_token())
+                .build());
     }
 }
