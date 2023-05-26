@@ -17,7 +17,6 @@ public class PurchaseServiceImpl implements PurchaseService{
 
     private final KakaoPayOpenFeign kakaoPayOpenFeign;
     private final RedisTemplate<String, RequestAddRental> requestAddRentalRedisTemplate;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${kakao.pay.cid}")
     private String CID;
