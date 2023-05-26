@@ -24,8 +24,7 @@ public class RentalController {
     @PostMapping()
     public ResponseEntity<Object> addRental(@RequestBody RequestAddRental requestAddRental) {
         ResponsePurchase responsePurchase= rentalService.addRental(requestAddRental);
-        kafkaProducer.send("user-point", responsePurchase);
-
+        kafkaProducer.send("user-reward", responsePurchase);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
