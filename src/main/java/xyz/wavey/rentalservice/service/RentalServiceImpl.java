@@ -53,7 +53,7 @@ public class RentalServiceImpl implements RentalService{
                 .startDate(startDate)
                 .returnZone(requestAddRental.getReturnZone())
                 .startZone(requestAddRental.getStartZone())
-                .paymentMethod(requestAddRental.getPaymentMethod())
+//                .paymentMethod(requestAddRental.getPaymentMethod())
                 .price(requestAddRental.getPrice())
                 .insuranceId(requestAddRental.getInsuranceId())
                 .keyAuth(false)
