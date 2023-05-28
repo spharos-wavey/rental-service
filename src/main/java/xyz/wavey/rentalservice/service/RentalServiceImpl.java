@@ -27,7 +27,7 @@ public class RentalServiceImpl implements RentalService{
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
-    public Rental addRental(RequestAddRental requestAddRental) {
+    public ResponsePurchase addRental(RequestAddRental requestAddRental) {
 
         LocalDateTime startDate;
         LocalDateTime endDate;
@@ -45,19 +45,24 @@ public class RentalServiceImpl implements RentalService{
             );
         }
 
-        return rentalRepo.save(Rental.builder()
+        rentalRepo.save(Rental.builder()
+            .uuid(requestAddRental.getUuid())
+            .purchaseState(PurchaseState.RESERVATION)
+            .vehicleId(requestAddRental.getVehicleId())
+            .endDate(endDate)
+            .startDate(startDate)
+            .returnZone(requestAddRental.getReturnZone())
+            .startZone(requestAddRental.getStartZone())
+            .paymentMethod(requestAddRental.getPaymentMethod())
+            .price(requestAddRental.getPrice())
+            .insuranceId(requestAddRental.getInsuranceId())
+            .keyAuth(false)
+            .build());
+
+        return ResponsePurchase.builder()
+                .reward(requestAddRental.getReward())
                 .uuid(requestAddRental.getUuid())
-                .purchaseState(PurchaseState.RESERVATION)
-                .vehicleId(requestAddRental.getVehicleId())
-                .endDate(endDate)
-                .startDate(startDate)
-                .returnZone(requestAddRental.getReturnZone())
-                .startZone(requestAddRental.getStartZone())
-                .paymentMethod(requestAddRental.getPaymentMethod())
-                .price(requestAddRental.getPrice())
-                .insuranceId(requestAddRental.getInsuranceId())
-                .keyAuth(false)
-                .build());
+                .build();
     }
 
     @Override

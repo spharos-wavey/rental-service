@@ -27,4 +27,6 @@ public class RequestAddRental {
 
     private Integer insuranceId;
 
+    private Integer reward;
+
 }
