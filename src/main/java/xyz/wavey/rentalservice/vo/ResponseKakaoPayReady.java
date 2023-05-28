@@ -21,4 +21,6 @@ public class ResponseKakaoPayReady {
     private String ios_app_scheme;
     private LocalDateTime created_at;
 
+    private String purchaseNumber;
+
 }

@@ -51,6 +51,8 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         requestAddRental.setTid(responseKakaoPayReady.getTid());
 
+        responseKakaoPayReady.setPurchaseNumber(requestAddRental.getPurchaseNumber());
+
         ValueOperations<String, RequestAddRental> vop = requestAddRentalRedisTemplate.opsForValue();
         vop.set(requestAddRental.getPurchaseNumber(), requestAddRental);
         requestAddRentalRedisTemplate.expire(requestAddRental.getPurchaseNumber(), 10, TimeUnit.MINUTES);
