@@ -29,6 +29,8 @@ public class RequestAddRental {
 
     private Integer insuranceId;
 
+    private Integer reward;
+
     // 크라이언트로 부터 받지 않고 비즈니스 로직에서 추가되는 값
     private String purchaseNumber;
 
