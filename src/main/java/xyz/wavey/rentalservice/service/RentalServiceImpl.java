@@ -92,8 +92,8 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
-    public ResponseGetRental getRental(Long id) {
-        Rental rental = rentalRepo.findById(id).orElseThrow(()->
+    public ResponseGetRental getRental(String uuid, Long id) {
+        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
         return ResponseGetRental.builder()
                 .rentalId(rental.getId())

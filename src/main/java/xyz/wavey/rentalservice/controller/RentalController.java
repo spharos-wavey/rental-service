@@ -43,10 +43,12 @@ public class RentalController {
     }
 
     @GetMapping()
-    public ResponseEntity<Object> getRental(@RequestParam("id") Long id){
+    public ResponseEntity<Object> getRental(
+            @RequestHeader("uid") String uuid,
+            @RequestParam("id") Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(rentalService.getRental(id));
+                .body(rentalService.getRental(uuid, id));
     }
 
     @DeleteMapping("/{id}")

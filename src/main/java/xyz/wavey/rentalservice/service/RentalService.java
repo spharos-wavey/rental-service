@@ -12,7 +12,7 @@ public interface RentalService {
 
     List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState);
 
-    ResponseGetRental getRental(Long id);
+    ResponseGetRental getRental(String uuid, Long id);
 
     HttpStatus deleteRental(String uuid, Long id);
 
