@@ -53,7 +53,7 @@ public class RentalServiceImpl implements RentalService{
             .startDate(startDate)
             .returnZone(requestAddRental.getReturnZone())
             .startZone(requestAddRental.getStartZone())
-            .paymentMethod(requestAddRental.getPaymentMethod())
+//            .paymentMethod(requestAddRental.getPaymentMethod())
             .price(requestAddRental.getPrice())
             .insuranceId(requestAddRental.getInsuranceId())
             .keyAuth(false)
@@ -174,7 +174,7 @@ public class RentalServiceImpl implements RentalService{
         } else if(rental.getKeyAuth() == Boolean.FALSE && rental.getEndDate().isBefore(LocalDateTime.now())){
             return ResponseEntity.status(ENDED_RENTAL_TIME.getHttpStatus()).body(ENDED_RENTAL_TIME.getMessage());
         } else {
-            return ResponseEntity.status(FORBIDDDEN_SMARTKEY.getHttpStatus()).body(FORBIDDDEN_SMARTKEY.getMessage());
+            return ResponseEntity.status(FORBIDDEN_SMART_KEY.getHttpStatus()).body(FORBIDDEN_SMART_KEY.getMessage());
         }
     }
 

@@ -13,6 +13,10 @@ public class RequestAddRental {
 
     private Long vehicleId;
 
+    private String carName;
+
+    private String carBrandName;
+
     private String startDate;
 
     private String endDate;
@@ -21,12 +25,15 @@ public class RequestAddRental {
 
     private Integer returnZone;
 
-    private String paymentMethod;
-
     private Integer price;
 
     private Integer insuranceId;
 
     private Integer reward;
+
+    // 크라이언트로 부터 받지 않고 비즈니스 로직에서 추가되는 값
+    private String purchaseNumber;
+
+    private String tid;
 
 }
