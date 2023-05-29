@@ -1,15 +1,25 @@
 package xyz.wavey.rentalservice.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
+import xyz.wavey.rentalservice.vo.*;
+
+import java.util.List;
 
 public interface RentalService {
 
-    ResponseEntity<Object> addRental(RequestAddRental requestAddRental);
+    ResponsePurchase addRental(RequestAddRental requestAddRental);
 
-    ResponseEntity<Object> getRental(Long id);
+    List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState);
 
-    ResponseEntity<Object> deleteRental(Long id);
+    ResponseGetRental getRental(String uuid, Long id);
 
-    ResponseEntity<Object> returnVehicle(Long id);
+    HttpStatus deleteRental(String uuid, Long id);
+
+    HttpStatus cancelRental(String uuid, Long id);
+
+    ResponseReturnVehicle returnVehicle(String uuid, Long id, RequestReturn requestReturn);
+
+    ResponseEntity<Object> openSmartKey(String uuid, Long id);
+
 }

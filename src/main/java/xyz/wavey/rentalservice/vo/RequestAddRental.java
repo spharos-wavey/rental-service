@@ -1,40 +1,39 @@
 package xyz.wavey.rentalservice.vo;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestAddRental {
 
-    @Column(nullable = false)
-    private Long userId;
+    private String uuid;
 
-    @Column(nullable = false)
     private Long vehicleId;
 
-    @Column(nullable = false)
-    private LocalDateTime startDate;
+    private String carName;
 
-    @Column(nullable = false)
-    private LocalDateTime endDate;
+    private String carBrandName;
 
-    @Column(nullable = false)
+    private String startDate;
+
+    private String endDate;
+
     private Integer startZone;
 
-    @Column(nullable = false)
     private Integer returnZone;
-
-    private String payment;
 
     private Integer price;
 
-    @Column(nullable = false)
     private Integer insuranceId;
+
+    private Integer reward;
+
+    // 크라이언트로 부터 받지 않고 비즈니스 로직에서 추가되는 값
+    private String purchaseNumber;
+
+    private String tid;
 
 }

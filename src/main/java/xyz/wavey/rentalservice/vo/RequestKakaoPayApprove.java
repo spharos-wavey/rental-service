@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestAddInsurance {
+public class RequestKakaoPayApprove {
 
-    private String name;
+    private String pg_token;
+    private String purchaseNumber;
 
-    private Integer price;
-
-    private String content;
 }

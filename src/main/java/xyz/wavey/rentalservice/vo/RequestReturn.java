@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestAddInsurance {
+public class RequestReturn {
 
-    private String name;
+    private String returnTime;
 
-    private Integer price;
+    private Integer finalPrice;
 
-    private String content;
 }

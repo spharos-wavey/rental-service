@@ -1,17 +1,17 @@
 package xyz.wavey.rentalservice.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestAddInsurance {
+public class ResponsePurchase {
 
-    private String name;
+    private String uuid;
 
-    private Integer price;
-
-    private String content;
+    private Integer reward;
 }
