@@ -22,4 +22,6 @@ public interface RentalService {
 
     ResponseEntity<Object> openSmartKey(String uuid, Long id);
 
+    Boolean checkCanRent(String uuid);
+
 }
