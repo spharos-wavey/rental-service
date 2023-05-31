@@ -83,4 +83,9 @@ public class RentalController {
         return rentalService.openSmartKey(uuid, id);
     }
 
+    @GetMapping("/can-rental")
+    public ResponseEntity<Object> checkCanRent(@RequestHeader("uid") String uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(rentalService.checkCanRent(uuid));
+    }
+
 }

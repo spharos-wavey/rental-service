@@ -178,4 +178,9 @@ public class RentalServiceImpl implements RentalService{
         }
     }
 
+    @Override
+    public Boolean checkCanRent(String uuid) {
+        return !rentalRepo.existsByUuidAndPurchaseState(uuid, PurchaseState.RESERVATION);
+    }
+
 }
