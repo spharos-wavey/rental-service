@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xyz.wavey.rentalservice.messagequeue.KafkaProducer;
 import xyz.wavey.rentalservice.service.RentalService;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestReturn;
+import xyz.wavey.rentalservice.vo.response.ResponseGetAllRental;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
+import xyz.wavey.rentalservice.vo.response.ResponseReturnVehicle;
 
 import java.util.List;
 

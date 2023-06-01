@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.vo;
+package xyz.wavey.rentalservice.vo.response;
 
 
 import lombok.AllArgsConstructor;

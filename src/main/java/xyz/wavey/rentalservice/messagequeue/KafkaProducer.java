@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
-import xyz.wavey.rentalservice.vo.ResponsePurchase;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
 
 import static xyz.wavey.rentalservice.base.exception.ErrorCode.JSON_PROCESSING_EXCEPTION;
 

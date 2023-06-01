@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.vo;
+package xyz.wavey.rentalservice.vo.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

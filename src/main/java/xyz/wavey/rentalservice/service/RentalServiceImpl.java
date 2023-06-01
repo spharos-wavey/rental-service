@@ -9,7 +9,12 @@ import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestReturn;
+import xyz.wavey.rentalservice.vo.response.ResponseGetAllRental;
+import xyz.wavey.rentalservice.vo.response.ResponseGetRental;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
+import xyz.wavey.rentalservice.vo.response.ResponseReturnVehicle;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.wavey.rentalservice.service.PurchaseService;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestKakaoPayApprove;
 
 @RestController
 @RequiredArgsConstructor

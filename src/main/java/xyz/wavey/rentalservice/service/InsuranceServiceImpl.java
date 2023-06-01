@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.Insurance;
 import xyz.wavey.rentalservice.repository.InsuranceRepo;
-import xyz.wavey.rentalservice.vo.RequestAddInsurance;
+import xyz.wavey.rentalservice.vo.request.RequestAddInsurance;
 
 import java.util.List;
 

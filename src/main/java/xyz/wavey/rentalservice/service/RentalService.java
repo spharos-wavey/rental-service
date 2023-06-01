@@ -2,7 +2,12 @@ package xyz.wavey.rentalservice.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestReturn;
+import xyz.wavey.rentalservice.vo.response.ResponseGetAllRental;
+import xyz.wavey.rentalservice.vo.response.ResponseGetRental;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
+import xyz.wavey.rentalservice.vo.response.ResponseReturnVehicle;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.vo;
+package xyz.wavey.rentalservice.vo.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,16 +11,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseGetRental {
-
+public class ResponseGetAllRental {
     private Long rentalId;
     private Long vehicleId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Integer billitaZoneId;
-    private Integer price;
-    private Integer finalPrice;
-    private Integer insuranceId;
-    private String paymentMethod;
-
 }

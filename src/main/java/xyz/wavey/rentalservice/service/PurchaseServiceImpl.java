@@ -5,7 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.vo.request.KakaoPayApproveParameter;
+import xyz.wavey.rentalservice.vo.request.KakaoPayReadyParameter;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayReady;
 
 import java.util.Objects;
 import java.util.UUID;
