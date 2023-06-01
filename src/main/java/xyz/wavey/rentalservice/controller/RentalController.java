@@ -5,12 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.wavey.rentalservice.messagequeue.KafkaProducer;
 import xyz.wavey.rentalservice.service.RentalService;
-import xyz.wavey.rentalservice.vo.request.RequestAddRental;
 import xyz.wavey.rentalservice.vo.request.RequestReturn;
 import xyz.wavey.rentalservice.vo.response.ResponseGetAllRental;
-import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
 import xyz.wavey.rentalservice.vo.response.ResponseReturnVehicle;
 
 import java.util.List;
@@ -22,15 +19,6 @@ import java.util.List;
 public class RentalController {
 
     private final RentalService rentalService;
-    private final KafkaProducer kafkaProducer;
-
-
-    @PostMapping()
-    public ResponseEntity<Object> addRental(@RequestBody RequestAddRental requestAddRental) {
-        ResponsePurchase responsePurchase= rentalService.addRental(requestAddRental);
-        kafkaProducer.send("user-reward", responsePurchase);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 
     @GetMapping("/{purchaseState}")
     public ResponseEntity<List<ResponseGetAllRental>> getAllRental(

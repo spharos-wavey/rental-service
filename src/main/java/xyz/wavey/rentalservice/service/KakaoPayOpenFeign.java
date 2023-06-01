@@ -18,7 +18,4 @@ public interface KakaoPayOpenFeign {
     @PostMapping(value = "/v1/payment/approve")
     ResponseKakaoPayApprove approval(@SpringQueryMap KakaoPayApproveParameter kakaoPayApproveParameter);
 
-//    @PostMapping(value = "/v1/payment/cancel")
-//    KakaoPayRefundResponse refund(@SpringQueryMap KakaoPayRefundParams kakaoPayRefundParams);
-
 }
