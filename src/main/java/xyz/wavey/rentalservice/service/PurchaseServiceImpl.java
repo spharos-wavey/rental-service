@@ -1,22 +1,41 @@
 package xyz.wavey.rentalservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.base.exception.ServiceException;
+import xyz.wavey.rentalservice.messagequeue.KafkaProducer;
+import xyz.wavey.rentalservice.repository.RentalRepo;
+import xyz.wavey.rentalservice.vo.request.*;
+import xyz.wavey.rentalservice.vo.response.ResponseAddRental;
+import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayReady;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static xyz.wavey.rentalservice.base.exception.ErrorCode.BAD_REQUEST_DATEFORMAT;
+import static xyz.wavey.rentalservice.base.exception.ErrorCode.BAD_REQUEST_RENTAL_DUPLICATED;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PurchaseServiceImpl implements PurchaseService{
 
+    private final RentalService rentalService;
     private final KakaoPayOpenFeign kakaoPayOpenFeign;
+    private final RentalRepo rentalRepo;
     private final RedisTemplate<String, RequestAddRental> requestAddRentalRedisTemplate;
+    private final KafkaProducer kafkaProducer;
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Value("${kakao.pay.cid}")
     private String CID;
@@ -27,14 +46,38 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Value("${kakao.pay.fail_url}")
     private String FAIL_URL;
 
-    public ResponseKakaoPayReady kakaoPayReady(RequestAddRental requestAddRental) {
-        /*
-        * 1. 클라이인터로 부터 구매와 관련된 정보를 받으면서 카카오 페이 준비하기가 시작됨
-        * 2. set 을 이용하여 구매번호 생성
-        * 3. https://developers.kakao.com/docs/latest/ko/kakaopay/single-payment#prepare-request 에 맞춰 api 호출
-        * 4. 반환값의 tid 를 포함하여 구매 정보를 구매번호를 키값으로 사용하여 레디스에 저장
-        * */
-        requestAddRental.setPurchaseNumber(UUID.randomUUID().toString());
+    public ResponseKakaoPayReady kakaoPayReady(RequestPurchaseReady requestPurchaseReady) {
+
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+        try {
+            startDate = LocalDateTime.parse(requestPurchaseReady.getStartDate(), dateTimeFormatter);
+            endDate = LocalDateTime.parse(requestPurchaseReady.getEndDate(), dateTimeFormatter);
+        } catch (Exception e) {
+            throw new ServiceException(BAD_REQUEST_DATEFORMAT.getMessage(), BAD_REQUEST_DATEFORMAT.getHttpStatus());
+        }
+
+        if (!rentalRepo.checkUserCanBook(requestPurchaseReady.getUuid(), startDate, endDate).isEmpty()) {
+            throw new ServiceException(
+                    BAD_REQUEST_RENTAL_DUPLICATED.getMessage(),
+                    BAD_REQUEST_RENTAL_DUPLICATED.getHttpStatus()
+            );
+        }
+
+        RequestAddRental requestAddRental = RequestAddRental.builder()
+                .uuid(requestPurchaseReady.getUuid())
+                .vehicleId(requestPurchaseReady.getVehicleId())
+                .carName(requestPurchaseReady.getCarName())
+                .carBrandName(requestPurchaseReady.getCarBrandName())
+                .startDate(requestPurchaseReady.getStartDate())
+                .endDate(requestPurchaseReady.getEndDate())
+                .startZone(requestPurchaseReady.getStartZone())
+                .returnZone(requestPurchaseReady.getReturnZone())
+                .price(requestPurchaseReady.getPrice())
+                .insuranceId(requestPurchaseReady.getInsuranceId())
+                .reward(requestPurchaseReady.getReward())
+                .purchaseNumber(UUID.randomUUID().toString())
+                .build();
 
         ResponseKakaoPayReady responseKakaoPayReady = kakaoPayOpenFeign.kakaoPayReady(KakaoPayReadyParameter.builder()
                 .cid(CID)
@@ -60,16 +103,32 @@ public class PurchaseServiceImpl implements PurchaseService{
     }
 
     @Override
-    public ResponseKakaoPayApprove kakaoPayApprove(RequestKakaoPayApprove requestKakaoPayApprove) {
+    public ResponseAddRental kakaoPayApprove(RequestKakaoPayApprove requestKakaoPayApprove) {
         ValueOperations<String, RequestAddRental> vop = requestAddRentalRedisTemplate.opsForValue();
         RequestAddRental purchaseInfo = vop.get(requestKakaoPayApprove.getPurchaseNumber());
 
-        return kakaoPayOpenFeign.approval(KakaoPayApproveParameter.builder()
+        kafkaProducer.send("user-reward", ResponsePurchase.builder()
+                        .uuid(Objects.requireNonNull(purchaseInfo).getUuid())
+                        .reward(purchaseInfo.getReward())
+                .build());
+
+        ResponseKakaoPayApprove responseKakaoPayApprove = kakaoPayOpenFeign.approval(KakaoPayApproveParameter.builder()
                 .cid(CID)
                 .tid(Objects.requireNonNull(purchaseInfo).getTid())
                 .partner_order_id(purchaseInfo.getPurchaseNumber())
                 .partner_user_id(purchaseInfo.getUuid())
                 .pg_token(requestKakaoPayApprove.getPg_token())
                 .build());
+
+        String purchaseMethod;
+        if (responseKakaoPayApprove.getCard_info() == null) {
+            purchaseMethod = responseKakaoPayApprove.getPayment_method_type();
+        } else {
+            purchaseMethod = responseKakaoPayApprove.getCard_info().getIssuer_corp();
+        }
+
+        purchaseInfo.setPurchaseMethod(purchaseMethod);
+
+        return rentalService.addRental(purchaseInfo);
     }
 }

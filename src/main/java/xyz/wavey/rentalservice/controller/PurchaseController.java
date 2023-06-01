@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.wavey.rentalservice.service.PurchaseService;
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.request.RequestKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.request.RequestPurchaseReady;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +21,8 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @PostMapping("/kakao/ready")
-    public ResponseEntity<Object> kakaoPayReady(@RequestBody RequestAddRental requestAddRental) {
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.kakaoPayReady(requestAddRental));
+    public ResponseEntity<Object> kakaoPayReady(@RequestBody RequestPurchaseReady requestPurchaseReady) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.kakaoPayReady(requestPurchaseReady));
     }
 
     @PostMapping("/kakao/approve")

@@ -9,7 +9,9 @@ import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
 import xyz.wavey.rentalservice.repository.RentalRepo;
-import xyz.wavey.rentalservice.vo.*;
+import xyz.wavey.rentalservice.vo.request.RequestAddRental;
+import xyz.wavey.rentalservice.vo.request.RequestReturn;
+import xyz.wavey.rentalservice.vo.response.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,41 +29,24 @@ public class RentalServiceImpl implements RentalService{
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
-    public ResponsePurchase addRental(RequestAddRental requestAddRental) {
+    public ResponseAddRental addRental(RequestAddRental requestAddRental) {
 
-        LocalDateTime startDate;
-        LocalDateTime endDate;
-        try {
-            startDate = LocalDateTime.parse(requestAddRental.getStartDate(), dateTimeFormatter);
-            endDate = LocalDateTime.parse(requestAddRental.getEndDate(), dateTimeFormatter);
-        } catch (Exception e) {
-            throw new ServiceException(BAD_REQUEST_DATEFORMAT.getMessage(), BAD_REQUEST_DATEFORMAT.getHttpStatus());
-        }
-
-        if (!rentalRepo.checkUserCanBool(requestAddRental.getUuid(), startDate, endDate).isEmpty()) {
-            throw new ServiceException(
-                    BAD_REQUEST_RENTAL_DUPLICATED.getMessage(),
-                    BAD_REQUEST_RENTAL_DUPLICATED.getHttpStatus()
-            );
-        }
-
-        rentalRepo.save(Rental.builder()
-            .uuid(requestAddRental.getUuid())
-            .purchaseState(PurchaseState.RESERVATION)
-            .vehicleId(requestAddRental.getVehicleId())
-            .endDate(endDate)
-            .startDate(startDate)
-            .returnZone(requestAddRental.getReturnZone())
-            .startZone(requestAddRental.getStartZone())
-//            .paymentMethod(requestAddRental.getPaymentMethod())
-            .price(requestAddRental.getPrice())
-            .insuranceId(requestAddRental.getInsuranceId())
-            .keyAuth(false)
-            .build());
-
-        return ResponsePurchase.builder()
-                .reward(requestAddRental.getReward())
+        Rental rental = rentalRepo.save(Rental.builder()
                 .uuid(requestAddRental.getUuid())
+                .purchaseState(PurchaseState.RESERVATION)
+                .vehicleId(requestAddRental.getVehicleId())
+                .endDate(LocalDateTime.parse(requestAddRental.getEndDate(), dateTimeFormatter))
+                .startDate(LocalDateTime.parse(requestAddRental.getStartDate(), dateTimeFormatter))
+                .returnZone(requestAddRental.getReturnZone())
+                .startZone(requestAddRental.getStartZone())
+                .paymentMethod(requestAddRental.getPurchaseMethod())
+                .price(requestAddRental.getPrice())
+                .insuranceId(requestAddRental.getInsuranceId())
+                .keyAuth(false)
+                .build());
+
+        return ResponseAddRental.builder()
+                .rentId(rental.getId())
                 .build();
     }
 
@@ -72,11 +57,10 @@ public class RentalServiceImpl implements RentalService{
             rentalList = rentalRepo.findAllByUuid(uuid);
         } else {
             try {
-                PurchaseState.valueOf(purchaseState);
+                rentalList = rentalRepo.findAllByUuidAndPurchaseState(uuid, PurchaseState.valueOf(purchaseState));
             } catch (Exception e) {
                 throw new ServiceException(BAD_REQUEST_PURCHASE_STATE.getMessage(), BAD_REQUEST_PURCHASE_STATE.getHttpStatus());
             }
-            rentalList = rentalRepo.findAllByUuidAndPurchaseState(uuid, purchaseState);
         }
 
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
@@ -121,7 +105,7 @@ public class RentalServiceImpl implements RentalService{
     @Override
     public HttpStatus cancelRental(String uuid, Long id) {
         if (rentalRepo.findByIdAndUuid(id, uuid).isPresent()){
-            Rental rental = rentalRepo.findById(id).get();
+            Rental rental = rentalRepo.findByIdAndUuid(id, uuid).get();
             rental.setPurchaseState(PurchaseState.CANCELED);
             rentalRepo.save(rental);
             return HttpStatus.OK;

@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
-import xyz.wavey.rentalservice.vo.ResponsePurchase;
+import xyz.wavey.rentalservice.vo.response.ResponsePurchase;
 
 import static xyz.wavey.rentalservice.base.exception.ErrorCode.JSON_PROCESSING_EXCEPTION;
 
 @Service
 public class KafkaProducer {
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     public KafkaProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public ResponsePurchase send(String topic, ResponsePurchase responsePurchase) {
+    public void send(String topic, ResponsePurchase responsePurchase) {
         ObjectMapper mapper = new ObjectMapper();
-        String jsonString = "";
+        String jsonString;
         try {
             jsonString = mapper.writeValueAsString(responsePurchase);
         } catch (JsonProcessingException e) {
@@ -30,8 +30,6 @@ public class KafkaProducer {
                     JSON_PROCESSING_EXCEPTION.getHttpStatus());
         }
         kafkaTemplate.send(topic, jsonString);
-        return responsePurchase;
     }
-
 
 }
