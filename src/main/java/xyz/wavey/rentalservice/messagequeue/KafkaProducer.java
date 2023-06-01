@@ -13,16 +13,16 @@ import static xyz.wavey.rentalservice.base.exception.ErrorCode.JSON_PROCESSING_E
 @Service
 public class KafkaProducer {
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     public KafkaProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public ResponsePurchase send(String topic, ResponsePurchase responsePurchase) {
+    public void send(String topic, ResponsePurchase responsePurchase) {
         ObjectMapper mapper = new ObjectMapper();
-        String jsonString = "";
+        String jsonString;
         try {
             jsonString = mapper.writeValueAsString(responsePurchase);
         } catch (JsonProcessingException e) {
@@ -30,8 +30,6 @@ public class KafkaProducer {
                     JSON_PROCESSING_EXCEPTION.getHttpStatus());
         }
         kafkaTemplate.send(topic, jsonString);
-        return responsePurchase;
     }
-
 
 }
