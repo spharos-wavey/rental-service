@@ -56,10 +56,4 @@ public class RoutingDataSourceConfiguration {
         return new LazyConnectionDataSourceProxy(routingDataSource(masterDataSource(), slaveDataSource()));
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager(LazyConnectionDataSourceProxy routingDataSource){
-        return new DataSourceTransactionManager(routingDataSource);
-    }
-
-
 }
