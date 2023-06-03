@@ -3,7 +3,7 @@ package xyz.wavey.rentalservice.service;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;
-import xyz.wavey.rentalservice.base.KakaoOpenFeignConfig;
+import xyz.wavey.rentalservice.base.config.KakaoOpenFeignConfig;
 import xyz.wavey.rentalservice.vo.request.KakaoPayApproveParameter;
 import xyz.wavey.rentalservice.vo.request.KakaoPayReadyParameter;
 import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayApprove;
