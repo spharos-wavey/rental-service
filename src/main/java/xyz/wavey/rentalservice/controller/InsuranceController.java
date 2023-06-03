@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import xyz.wavey.rentalservice.model.Insurance;
 import xyz.wavey.rentalservice.service.InsuranceService;
-import xyz.wavey.rentalservice.vo.RequestAddInsurance;
+import xyz.wavey.rentalservice.vo.request.RequestAddInsurance;
 
 import java.util.List;
 

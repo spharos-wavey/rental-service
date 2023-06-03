@@ -1,14 +1,14 @@
 package xyz.wavey.rentalservice.service;
 
-import xyz.wavey.rentalservice.vo.RequestAddRental;
-import xyz.wavey.rentalservice.vo.RequestKakaoPayApprove;
-import xyz.wavey.rentalservice.vo.ResponseKakaoPayApprove;
-import xyz.wavey.rentalservice.vo.ResponseKakaoPayReady;
+import xyz.wavey.rentalservice.vo.request.RequestKakaoPayApprove;
+import xyz.wavey.rentalservice.vo.request.RequestPurchaseReady;
+import xyz.wavey.rentalservice.vo.response.ResponseAddRental;
+import xyz.wavey.rentalservice.vo.response.ResponseKakaoPayReady;
 
 public interface PurchaseService {
 
-    ResponseKakaoPayReady kakaoPayReady(RequestAddRental requestAddRental);
+    ResponseKakaoPayReady kakaoPayReady(RequestPurchaseReady requestPurchaseReady);
 
-    ResponseKakaoPayApprove kakaoPayApprove(RequestKakaoPayApprove requestKakaoPayApprove);
+    ResponseAddRental kakaoPayApprove(RequestKakaoPayApprove requestKakaoPayApprove);
 
 }
