@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.messagequeue.KafkaProducer;
+import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.repository.RentalRepo;
 import xyz.wavey.rentalservice.vo.request.*;
 import xyz.wavey.rentalservice.vo.response.ResponseAddRental;
@@ -59,7 +60,7 @@ public class PurchaseServiceImpl implements PurchaseService{
             throw new ServiceException(BAD_REQUEST_DATEFORMAT.getMessage(), BAD_REQUEST_DATEFORMAT.getHttpStatus());
         }
 
-        if (!rentalRepo.checkUserCanBook(requestPurchaseReady.getUuid(), startDate, endDate).isEmpty()) {
+        if (!rentalRepo.checkUserCanBook(requestPurchaseReady.getUuid(), startDate, endDate, PurchaseState.RESERVATION).isEmpty()) {
             throw new ServiceException(
                     BAD_REQUEST_RENTAL_DUPLICATED.getMessage(),
                     BAD_REQUEST_RENTAL_DUPLICATED.getHttpStatus()

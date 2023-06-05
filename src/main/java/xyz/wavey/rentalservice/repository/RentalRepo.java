@@ -19,8 +19,8 @@ public interface RentalRepo extends JpaRepository<Rental, Long> {
 
     Optional<Rental> findByIdAndUuid(Long id, String uuid);
 
-    @Query(value = "select r from Rental as r where r.uuid = :uuid and r.endDate > :startDate and r.startDate < :endDate")
-    List<Rental> checkUserCanBook(@Param("uuid") String uuid, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query(value = "select r from Rental as r where r.uuid = :uuid and r.endDate > :startDate and r.startDate < :endDate and r.purchaseState = :purchaseState")
+    List<Rental> checkUserCanBook(@Param("uuid") String uuid, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("purchaseState") PurchaseState purchaseState);
 
     Boolean existsByUuidAndPurchaseState(String uuid, PurchaseState purchaseState);
 }
