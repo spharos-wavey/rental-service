@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
@@ -51,6 +52,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState) {
         List<Rental> rentalList;
         if(purchaseState.equals("ALL")){
@@ -76,6 +78,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseGetRental getRental(String uuid, Long id) {
         Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -115,6 +118,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = false)
     public ResponseReturnVehicle returnVehicle(String uuid, Long id, RequestReturn requestReturn) {
         Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -148,6 +152,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = false)
     public ResponseEntity<Object> openSmartKey(String uuid, Long id) {
         Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -163,6 +168,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Boolean checkCanRent(String uuid) {
         return !rentalRepo.existsByUuidAndPurchaseState(uuid, PurchaseState.RESERVATION);
     }

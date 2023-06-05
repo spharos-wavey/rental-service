@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.messagequeue.KafkaProducer;
 import xyz.wavey.rentalservice.repository.RentalRepo;
@@ -46,6 +47,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Value("${kakao.pay.fail_url}")
     private String FAIL_URL;
 
+    @Transactional(readOnly = true)
     public ResponseKakaoPayReady kakaoPayReady(RequestPurchaseReady requestPurchaseReady) {
 
         LocalDateTime startDate;
@@ -98,7 +100,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         ValueOperations<String, RequestAddRental> vop = requestAddRentalRedisTemplate.opsForValue();
         vop.set(requestAddRental.getPurchaseNumber(), requestAddRental);
-        requestAddRentalRedisTemplate.expire(requestAddRental.getPurchaseNumber(), 10, TimeUnit.MINUTES);
+        requestAddRentalRedisTemplate.expire(requestAddRental.getPurchaseNumber(), 15, TimeUnit.MINUTES);
         return responseKakaoPayReady;
     }
 
