@@ -130,7 +130,6 @@ public class RentalServiceImpl implements RentalService{
             rental.setKeyAuth(false);
             rentalRepo.save(rental);
 
-            //todo 대여 시작 시간보다 이른 시간에 반납이 가능한가? 가능하다면 어떻게 처리할 것인가에 대한 논의 필요 - 05/24 - 김지욱
             String message = null;
             if (rental.getEndDate().isAfter(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter)) &&
                     rental.getStartDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))) {
