@@ -110,9 +110,7 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public HttpStatus cancelRental(String uuid, Long id) {
-        log.info("uuid : {}, id : {}", uuid, id);
         if (rentalRepo.findByIdAndUuid(id, uuid).isPresent()){
-            log.info("canceling rental...");
             Rental rental = rentalRepo.findByIdAndUuid(id, uuid).get();
             rental.setPurchaseState(PurchaseState.CANCELED);
             rentalRepo.save(rental);
