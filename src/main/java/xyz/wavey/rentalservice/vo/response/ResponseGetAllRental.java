@@ -16,4 +16,7 @@ public class ResponseGetAllRental {
     private Long vehicleId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private  String purchaseState;
+    private Integer price;
+    private Integer returnZone;
 }

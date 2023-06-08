@@ -68,10 +68,13 @@ public class RentalServiceImpl implements RentalService{
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
         for(Rental rental : rentalList){
             responseGetAllRentals.add(ResponseGetAllRental.builder()
+                    .purchaseState(rental.getPurchaseState().toString())
                     .rentalId(rental.getId())
                     .vehicleId(rental.getVehicleId())
                     .endDate(rental.getEndDate())
                     .startDate(rental.getStartDate())
+                    .price(rental.getPrice())
+                    .returnZone(rental.getReturnZone())
                     .build());
         }
         return responseGetAllRentals;
