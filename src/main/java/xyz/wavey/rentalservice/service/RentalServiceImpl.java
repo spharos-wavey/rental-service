@@ -68,10 +68,13 @@ public class RentalServiceImpl implements RentalService{
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
         for(Rental rental : rentalList){
             responseGetAllRentals.add(ResponseGetAllRental.builder()
+                    .purchaseState(rental.getPurchaseState().toString())
                     .rentalId(rental.getId())
                     .vehicleId(rental.getVehicleId())
                     .endDate(rental.getEndDate())
                     .startDate(rental.getStartDate())
+                    .price(rental.getPrice())
+                    .returnZone(rental.getReturnZone())
                     .build());
         }
         return responseGetAllRentals;
@@ -107,7 +110,9 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public HttpStatus cancelRental(String uuid, Long id) {
+        log.info("uuid : {}, id : {}", uuid, id);
         if (rentalRepo.findByIdAndUuid(id, uuid).isPresent()){
+            log.info("canceling rental...");
             Rental rental = rentalRepo.findByIdAndUuid(id, uuid).get();
             rental.setPurchaseState(PurchaseState.CANCELED);
             rentalRepo.save(rental);
