@@ -156,18 +156,24 @@ public class RentalServiceImpl implements RentalService{
     @Override
     @Transactional(readOnly = false)
     public ResponseEntity<Object> openSmartKey(String uuid, Long id) {
-        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
-                new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
-        if(rental.getKeyAuth() == Boolean.FALSE && rental.getStartDate().minusMinutes(16).isBefore(LocalDateTime.now())){
-            rental.setKeyAuth(Boolean.TRUE);
-            rentalRepo.save(rental);
+        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(() ->
+                new ServiceException(NOT_FOUND_RENTAL.getMessage(), NOT_FOUND_RENTAL.getHttpStatus()));
+        if (rental.getKeyAuth() == Boolean.FALSE) {
+            if (rental.getEndDate().isBefore(LocalDateTime.now())) {
+                return ResponseEntity.status(HttpStatus.OK).body("대여 가능 시각이 종료 되었습니다.");
+            } else if(rental.getStartDate().minusMinutes(15).isBefore(LocalDateTime.now())){
+                rental.setKeyAuth(Boolean.TRUE);
+                rentalRepo.save(rental);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body("스마트키는 대여 시작 15분 전부터 이용할 수 있습니다.");
+            }
+        } else{
             return ResponseEntity.status(HttpStatus.OK).build();
-        } else if(rental.getKeyAuth() == Boolean.FALSE && rental.getEndDate().isBefore(LocalDateTime.now())){
-            return ResponseEntity.status(ENDED_RENTAL_TIME.getHttpStatus()).body(ENDED_RENTAL_TIME.getMessage());
-        } else {
-            return ResponseEntity.status(FORBIDDEN_SMART_KEY.getHttpStatus()).body(FORBIDDEN_SMART_KEY.getMessage());
         }
+
     }
+
 
     @Override
     @Transactional(readOnly = true)
