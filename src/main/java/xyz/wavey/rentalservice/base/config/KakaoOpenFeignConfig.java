@@ -1,4 +1,4 @@
-package xyz.wavey.rentalservice.base;
+package xyz.wavey.rentalservice.base.config;
 
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.wavey.rentalservice.base.exception.ServiceException;
 import xyz.wavey.rentalservice.model.PurchaseState;
 import xyz.wavey.rentalservice.model.Rental;
@@ -51,6 +52,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseGetAllRental> getAllRental(String uuid, String purchaseState) {
         List<Rental> rentalList;
         if(purchaseState.equals("ALL")){
@@ -66,16 +68,20 @@ public class RentalServiceImpl implements RentalService{
         List<ResponseGetAllRental> responseGetAllRentals = new ArrayList<>();
         for(Rental rental : rentalList){
             responseGetAllRentals.add(ResponseGetAllRental.builder()
+                    .purchaseState(rental.getPurchaseState().toString())
                     .rentalId(rental.getId())
                     .vehicleId(rental.getVehicleId())
                     .endDate(rental.getEndDate())
                     .startDate(rental.getStartDate())
+                    .price(rental.getPrice())
+                    .returnZone(rental.getReturnZone())
                     .build());
         }
         return responseGetAllRentals;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseGetRental getRental(String uuid, Long id) {
         Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -115,6 +121,7 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = false)
     public ResponseReturnVehicle returnVehicle(String uuid, Long id, RequestReturn requestReturn) {
         Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
                 new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
@@ -126,7 +133,6 @@ public class RentalServiceImpl implements RentalService{
             rental.setKeyAuth(false);
             rentalRepo.save(rental);
 
-            //todo 대여 시작 시간보다 이른 시간에 반납이 가능한가? 가능하다면 어떻게 처리할 것인가에 대한 논의 필요 - 05/24 - 김지욱
             String message = null;
             if (rental.getEndDate().isAfter(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter)) &&
                     rental.getStartDate().isBefore(LocalDateTime.parse(requestReturn.getReturnTime(), dateTimeFormatter))) {
@@ -148,21 +154,29 @@ public class RentalServiceImpl implements RentalService{
     }
 
     @Override
+    @Transactional(readOnly = false)
     public ResponseEntity<Object> openSmartKey(String uuid, Long id) {
-        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(()->
-                new ServiceException(NOT_FOUND_RENTAL.getMessage(),NOT_FOUND_RENTAL.getHttpStatus()));
-        if(rental.getKeyAuth() == Boolean.FALSE && rental.getStartDate().minusMinutes(16).isBefore(LocalDateTime.now())){
-            rental.setKeyAuth(Boolean.TRUE);
-            rentalRepo.save(rental);
+        Rental rental = rentalRepo.findByIdAndUuid(id, uuid).orElseThrow(() ->
+                new ServiceException(NOT_FOUND_RENTAL.getMessage(), NOT_FOUND_RENTAL.getHttpStatus()));
+        if (rental.getKeyAuth() == Boolean.FALSE) {
+            if (rental.getEndDate().isBefore(LocalDateTime.now())) {
+                return ResponseEntity.status(HttpStatus.OK).body("대여 가능 시각이 종료 되었습니다.");
+            } else if(rental.getStartDate().minusMinutes(15).isBefore(LocalDateTime.now())){
+                rental.setKeyAuth(Boolean.TRUE);
+                rentalRepo.save(rental);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body("스마트키는 대여 시작 15분 전부터 이용할 수 있습니다.");
+            }
+        } else{
             return ResponseEntity.status(HttpStatus.OK).build();
-        } else if(rental.getKeyAuth() == Boolean.FALSE && rental.getEndDate().isBefore(LocalDateTime.now())){
-            return ResponseEntity.status(ENDED_RENTAL_TIME.getHttpStatus()).body(ENDED_RENTAL_TIME.getMessage());
-        } else {
-            return ResponseEntity.status(FORBIDDEN_SMART_KEY.getHttpStatus()).body(FORBIDDEN_SMART_KEY.getMessage());
         }
+
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public Boolean checkCanRent(String uuid) {
         return !rentalRepo.existsByUuidAndPurchaseState(uuid, PurchaseState.RESERVATION);
     }
