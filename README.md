@@ -2,8 +2,6 @@
 
 ## 기술 스택
 
----
-
 * ### Java 17
 * ### Spring Boot 3.0.6
 * ### Gradle - Groovy
@@ -16,8 +14,6 @@
   * 결제 시 포인트를 사용한 경우 유저의 보유 포인트에서 사용한만큼 차감하는 요청을 비동기 방식으로 처리하기 위해서 사용하였음
 
 ## 프로젝트 구성(디렉토리 구조)
-
----
 
 ### 계층형 디렉토리 구조 선택
 ```text
@@ -48,13 +44,9 @@
 
 ## ERD
 
----
-
-<img src="https://user-images.githubusercontent.com/90381800/243152568-35d1dab4-93c1-4a46-a69a-7b7248529149.png" alt="rental-service erd">
+<img src="https://user-images.githubusercontent.com/90381800/243152568-35d1dab4-93c1-4a46-a69a-7b7248529149.png">
 
 ## 개발 컨벤션
-
----
 
 ### 디렉토리명, 클래스명 규칙
 * 패키지명은 소문자로 시작하여 카멜표기법 사용
@@ -72,8 +64,6 @@
 5. 주간 단위로 develop에서 main으로 PR(백업용)
 
 ## 실행
-
----
 
 ### application.yml
 ```yaml
